@@ -82,6 +82,9 @@ module Paperclip
       instance_write(:file_size,       uploaded_file.size.to_i)
       instance_write(:updated_at,      Time.now)
 
+      # store original filename
+      instance_write(:uploaded_file_name, uploaded_file.original_filename)
+
       @dirty = true
 
       post_process if valid?
@@ -188,6 +191,12 @@ module Paperclip
     def updated_at
       time = instance_read(:updated_at)
       time && time.to_f.to_i
+    end
+    
+    # Returns the name of the file as originally uploaded, and lives in the
+    # <attachment>_uploaded_file_name attribute of the model.
+    def uploaded_filename
+      instance_read(:uploaded_file_name)
     end
 
     # Paths and URLs can have a number of variables interpolated into them
@@ -401,6 +410,7 @@ module Paperclip
       instance_write(:content_type, nil)
       instance_write(:file_size, nil)
       instance_write(:updated_at, nil)
+      instance_write(:uploaded_file_name, nil)
     end
 
     def flush_errors #:nodoc:
