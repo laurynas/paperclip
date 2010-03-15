@@ -42,6 +42,8 @@ module Paperclip
   class Tempfile < ::Tempfile
     # Replaces Tempfile's +make_tmpname+ with one that honors file extensions.
     def make_tmpname(basename, n)
+      # secure to prevent command injection
+      basename  = basename.strip.gsub(/[^A-Za-z\d\.\-_]+/, '_')
       extension = File.extname(basename)
       sprintf("%s,%d,%d%s", File.basename(basename, extension), $$, n, extension)
     end
